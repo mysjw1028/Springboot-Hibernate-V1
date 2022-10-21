@@ -14,9 +14,10 @@ import lombok.Setter;
 @Entity
 public class Board {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 해당 DB의 번호 증가전략을 따라간다
     private Long id;
     private String title;
     @Column(length = 1000)
     private String content;
+    private String author;
 }
