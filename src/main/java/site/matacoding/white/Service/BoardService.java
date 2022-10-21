@@ -9,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import site.matacoding.white.domain.Board;
 import site.matacoding.white.domain.BoardRepository;
 
+//트랜잭션 관리
+// DTO 변환해서 컨트롤러에게 돌려줘야한다
+// @Transactional // db에 영향을 주는거라서 무조건 걸어줘야한다
+
 @RequiredArgsConstructor
 @Service // IOC에 뜨게함
 public class BoardService {// 트랜잭션 관리 위해서 만든거!! (다 만들어서 일관성을 맞춰준다)
@@ -37,7 +41,7 @@ public class BoardService {// 트랜잭션 관리 위해서 만든거!! (다 만
         return boardRepository.findAll();
     }
 
-    @Transactional
+    @Transactional // db에 영향을 주는거라서 무조건 걸어줘야한다
     public void deleteById(Long id) {
         boardRepository.deleteById(id);
     }
