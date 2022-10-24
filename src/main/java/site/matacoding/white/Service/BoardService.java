@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import site.matacoding.white.domain.Board;
 import site.matacoding.white.domain.BoardRepository;
+import site.matacoding.white.dto.BoardReqDto.BoardSaveDto;
 
 //트랜잭션 관리
 // DTO 변환해서 컨트롤러에게 돌려줘야한다
@@ -19,13 +20,23 @@ public class BoardService {// 트랜잭션 관리 위해서 만든거!! (다 만
 
     private final BoardRepository boardRepository;
 
-    public Board findById(Long id) {
-        return boardRepository.findById(id);
+    @Transactional // 직접 걸어줘야한다!
+    public void save(BoardSaveDto boardSaveDto) {
+        Board board = new Board();
+        board.setTitle(boardSaveDto.getTitle());
+        board.setContent(boardSaveDto.getContent());
+        board.setUser(boardSaveDto.getUser());
+        boardRepository.save(board);
+        // boardRepository.save(board); // 1대1 매칭 / insert 하는거는 서비스 있어야한다
     }
 
-    @Transactional // 직접 걸어줘야한다!
-    public void save(Board board) {
-        boardRepository.save(board); // 1대1 매칭 / insert 하는거는 서비스 있어야한다
+    @Transactional(readOnly = true) // 세션 종료 안됨
+    public Board findById(Long id) {
+        Board boardPS = boardRepository.findById(id); // 오픈 인뷰가 false니까 조회후 세션 종료
+        boardPS.getUser().getUsername(); // Lazy 로딩됨. (근데 Eager이면 이미 로딩되서 select 두번
+        // 4. user select 됨?
+        System.out.println("서비스단에서 지연로딩 함. 왜? 여기까지는 디비커넥션이 유지되니까");
+        return boardPS;
     }
 
     @Transactional
@@ -33,7 +44,6 @@ public class BoardService {// 트랜잭션 관리 위해서 만든거!! (다 만
         Board boardPS = boardRepository.findById(id); // 영속화가 된거
         boardPS.setTitle(board.getTitle());
         boardPS.setContent(board.getContent());
-        boardPS.setAuthor(board.getAuthor());
     } // 트랜잭션 종료시 -> 더티체킹을 함
       // flush가 자동으로 된다 boardPS는 조회를 했기에 들고있다. 만약 없으면 insert를한다.
 
