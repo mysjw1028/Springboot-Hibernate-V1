@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import site.matacoding.white.domain.Board;
 import site.matacoding.white.domain.BoardRepository;
+import site.matacoding.white.domain.User;
+import site.matacoding.white.domain.UserRepository;
 import site.matacoding.white.dto.BoardReqDto.BoardSaveReqDto;
 
 //트랜잭션 관리
@@ -19,13 +21,15 @@ import site.matacoding.white.dto.BoardReqDto.BoardSaveReqDto;
 public class BoardService {// 트랜잭션 관리 위해서 만든거!! (다 만들어서 일관성을 맞춰준다)
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     @Transactional // 직접 걸어줘야한다!
     public void save(BoardSaveReqDto boardSaveReqDto) {// boardRepository.save(board); // 1대1 매칭 / insert 하는거는 서비스 있어야한다
+        User userPS = userRepository.findById(boardSaveReqDto.getSessionUser().getId());
         Board board = new Board();
         board.setTitle(boardSaveReqDto.getTitle());
         board.setContent(boardSaveReqDto.getContent());
-        board.setUser(boardSaveReqDto.getSessionUser().toEntity());
+        board.setUser(userPS);
         boardRepository.save(board);
     }
 

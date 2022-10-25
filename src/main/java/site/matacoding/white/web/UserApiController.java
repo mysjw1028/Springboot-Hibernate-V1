@@ -33,5 +33,6 @@ public class UserApiController { // view는 플러터에서 할거라서 @Contro
         SessionUser sessionUser = userService.login(loginReqDto);
         session.setAttribute("sessionUser", sessionUser);
         return new ResponseDto<>(1, "ok", sessionUser);
+
     }// us 인증관련된 주소는 도메인명을 안붙임 -> 인증에 관련된거는 인터셉터가 붙기 때문에 필터링이 필요함
 } // Dto를 안받아서 착각할수가 있다
