@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import site.matacoding.white.domain.Board;
 import site.matacoding.white.domain.BoardRepository;
-import site.matacoding.white.dto.BoardReqDto.BoardSaveDto;
+import site.matacoding.white.dto.BoardReqDto.BoardSaveReqDto;
 
 //트랜잭션 관리
 // DTO 변환해서 컨트롤러에게 돌려줘야한다
@@ -21,17 +21,17 @@ public class BoardService {// 트랜잭션 관리 위해서 만든거!! (다 만
     private final BoardRepository boardRepository;
 
     @Transactional // 직접 걸어줘야한다!
-    public void save(BoardSaveDto boardSaveDto) {
+    public void save(BoardSaveReqDto boardSaveReqDto) {// boardRepository.save(board); // 1대1 매칭 / insert 하는거는 서비스 있어야한다
         Board board = new Board();
-        board.setTitle(boardSaveDto.getTitle());
-        board.setContent(boardSaveDto.getContent());
-        board.setUser(boardSaveDto.getUser());
+        board.setTitle(boardSaveReqDto.getTitle());
+        board.setContent(boardSaveReqDto.getContent());
+        board.setUser(boardSaveReqDto.getSessionUser().toEntity());
         boardRepository.save(board);
-        // boardRepository.save(board); // 1대1 매칭 / insert 하는거는 서비스 있어야한다
     }
 
     @Transactional(readOnly = true) // 세션 종료 안됨
     public Board findById(Long id) {
+        System.out.println("최초select");
         Board boardPS = boardRepository.findById(id); // 오픈 인뷰가 false니까 조회후 세션 종료
         boardPS.getUser().getUsername(); // Lazy 로딩됨. (근데 Eager이면 이미 로딩되서 select 두번
         // 4. user select 됨?
