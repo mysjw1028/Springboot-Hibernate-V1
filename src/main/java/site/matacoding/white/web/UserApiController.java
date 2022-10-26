@@ -21,6 +21,10 @@ public class UserApiController { // view는 플러터에서 할거라서 @Contro
     public final UserService userService;
     public final HttpSession session;
 
+    // 회원정보수정
+
+    // 회원정보보기
+
     // 응답의 Dto는 서비스에서 만든다.
     @PostMapping("/join") // ResponseEntity 응답의 엔티티 -> 1 상태를 줘야함 (http)
     public ResponseDto<?> save(@RequestBody JoinReqDto joinReqDto) {

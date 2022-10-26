@@ -12,7 +12,7 @@ public class UserRespDto {
         private Long id;
         private String username;
 
-        // 응답의 Dto는 생성자로 처리한다
+        // 응답의 DTO는 생성자로 처리한다.
         public JoinRespDto(User user) {
             this.id = user.getId();
             this.username = user.getUsername();

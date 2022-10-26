@@ -1,7 +1,5 @@
 package site.matacoding.white.web;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import site.matacoding.white.Service.BoardService;
-import site.matacoding.white.domain.Board;
 import site.matacoding.white.dto.BoardReqDto.BoardSaveReqDto;
+import site.matacoding.white.dto.BoardReqDto.BoardUpdateReqDto;
 import site.matacoding.white.dto.BoardRespDto.BoardSaveRespDto;
 import site.matacoding.white.dto.ResponseDto;
 import site.matacoding.white.dto.SessionUser;
@@ -36,34 +34,39 @@ public class BoardApiController {
         return new ResponseDto<>(1, "성공", boardSaveRespDto);
     }
 
+    // 게시글 상세보기
+    @GetMapping("/board/{id}")
+    public ResponseDto<?> findById(@PathVariable Long id) {
+        return new ResponseDto<>(1, "성공", boardService.findById(id)); // Entity -> JSON 변경 (MessageConverter)
+    }
+
     @PutMapping("/board/{id}")
-    public String update(@PathVariable Long id, @RequestBody Board board) {
-        boardService.update(id, board);
-        return "ok";
+    public ResponseDto<?> update(@PathVariable Long id, @RequestBody BoardUpdateReqDto boardUpdateReqDto) {
+        boardUpdateReqDto.setId(id);
+        return new ResponseDto<>(1, "성공", boardService.update(boardUpdateReqDto));
+
     }
 
     @DeleteMapping("/board/delete/{id}")
-    public String delete(@PathVariable Long id) {
+    public ResponseDto<?> delete(@PathVariable Long id) {
         boardService.deleteById(id);
-        return "ok";
+        return new ResponseDto<>(1, "성공", null);
     }
 
     @GetMapping("/board")
-    public List<Board> findAll() {
-        List<Board> boardPS = boardService.findAll();
-        return boardPS;
+    public ResponseDto<?> findAll() {
+        return new ResponseDto<>(1, "성공", boardService.findAll());
     }
 
-    @GetMapping("/v2/board/{id}")
-    public String findByIdV2(@PathVariable Long id) {
-        System.out.println("현재 open-in-view는 true 인가 false 인가 생각해보기!!");
-        Board boardPS = boardService.findById(id);
-        System.out.println("board.id : " + boardPS.getId());
-        System.out.println("board.title : " + boardPS.getTitle());
-        System.out.println("board.content : " + boardPS.getContent());
-        System.out.println("open-in-view가 false이면 Lazy 로딩 못함");
+    // // @GetMapping("/v2/board/{id}")
+    // // public String findByIdV2(@PathVariable Long id) {
+    // System.out.println("현재 open-in-view는 true 인가 false 인가 생각해보기!!");
+    // Board boardPS = boardService.findById(id);
+    // System.out.println("board.id : " + boardPS.getId());
+    // System.out.println("board.title : " + boardPS.getTitle());
+    // System.out.println("board.content : " + boardPS.getContent());
+    // System.out.println("open-in-view가 false이면 Lazy 로딩 못함");
 
-        // 날라감)
-        return "ok";
-    }
+    // // 날라감)
+    // return "ok";
 }

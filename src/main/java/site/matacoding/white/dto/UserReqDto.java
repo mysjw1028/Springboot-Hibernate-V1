@@ -8,7 +8,7 @@ public class UserReqDto {
 
     @Setter
     @Getter
-    public static class JoinReqDto { // 로그인 전 로직들 전부 다 앞에 엔티티 안 붙임. POST/user -> /join
+    public static class JoinReqDto { // 로그인 전 로직들 전부다 앞에 엔티티 안붙임. POST /user -> /join
         private String username;
         private String password;
 
@@ -23,4 +23,5 @@ public class UserReqDto {
         private String username;
         private String password;
     }
+
 }
