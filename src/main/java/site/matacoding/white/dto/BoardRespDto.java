@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import site.matacoding.white.domain.Board;
+import site.matacoding.white.domain.Comment;
 import site.matacoding.white.domain.User;
 
 public class BoardRespDto {
@@ -45,27 +46,7 @@ public class BoardRespDto {
         private String title;
         private String content;
         private BoardUserDto user;
-        private List<CommentDto> comment = new ArrayList<>();
-
-        @Setter
-        @Getter
-        public static class CommentDto {
-            private Long id;
-            private String content;
-            private CommentUserDto user;
-        }
-
-        @Setter
-        @Getter
-        public static class CommentUserDto {
-            private Long id;
-            private String username;
-
-            public CommentUserDto(User user) {
-                this.id = user.getId();
-                this.username = user.getUsername();
-            }
-        }
+        private List<CommentDto> comments = new ArrayList<>();
 
         @Setter
         @Getter
@@ -74,8 +55,34 @@ public class BoardRespDto {
             private String username;
 
             public BoardUserDto(User user) {
-                this.id = user.getId();
-                this.username = user.getUsername();
+                this.id = user.getId(); // Lazy
+                this.username = user.getUsername(); // Lazy
+            }
+        }
+
+        @Setter
+        @Getter
+        public static class CommentDto {
+            private Long id;
+            private String content;
+            private CommentUserDto user;
+
+            public CommentDto(Comment comment) {
+                this.id = comment.getId();
+                this.content = comment.getContent();
+                this.user = new CommentUserDto(comment.getUser());
+            }
+
+            @Setter
+            @Getter
+            public static class CommentUserDto {
+                private Long id;
+                private String username;
+
+                public CommentUserDto(User user) {
+                    this.id = user.getId(); // Lazy
+                    this.username = user.getUsername(); // Lazy
+                }
             }
         }
 
@@ -84,6 +91,12 @@ public class BoardRespDto {
             this.title = board.getTitle();
             this.content = board.getContent();
             this.user = new BoardUserDto(board.getUser());
+            for (Comment c : board.getComments()) {
+                this.comments.add(new CommentDto(c));
+            }
+            // this.comment = board.getComments().stream().map((comment) -> new
+            // CommentDto(comment))
+            // .collect(Collectors.toList());
         }
     }
 
