@@ -1,5 +1,8 @@
 package site.matacoding.white.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import site.matacoding.white.domain.Board;
@@ -33,7 +36,7 @@ public class BoardRespDto {
             this.content = board.getContent();
             this.user = new UserDto(board.getUser());
         }
-    } // 딴데서 사용불가
+    }
 
     @Setter
     @Getter
@@ -41,15 +44,36 @@ public class BoardRespDto {
         private Long id;
         private String title;
         private String content;
-        private UserDto user;
+        private BoardUserDto user;
+        private List<CommentDto> comment = new ArrayList<>();
 
         @Setter
         @Getter
-        public static class UserDto {
+        public static class CommentDto {
+            private Long id;
+            private String content;
+            private CommentUserDto user;
+        }
+
+        @Setter
+        @Getter
+        public static class CommentUserDto {
             private Long id;
             private String username;
 
-            public UserDto(User user) {
+            public CommentUserDto(User user) {
+                this.id = user.getId();
+                this.username = user.getUsername();
+            }
+        }
+
+        @Setter
+        @Getter
+        public static class BoardUserDto {
+            private Long id;
+            private String username;
+
+            public BoardUserDto(User user) {
                 this.id = user.getId();
                 this.username = user.getUsername();
             }
@@ -59,9 +83,9 @@ public class BoardRespDto {
             this.id = board.getId();
             this.title = board.getTitle();
             this.content = board.getContent();
-            this.user = new UserDto(board.getUser());
+            this.user = new BoardUserDto(board.getUser());
         }
-    }// 딴데서 사용불가
+    }
 
     @Setter
     @Getter

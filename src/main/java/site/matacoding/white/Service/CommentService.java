@@ -31,5 +31,15 @@ public class CommentService {
             throw new RuntimeException("게시글이 없어서 댓글을 쓸 수 없습니다.");
         }
     }
+
+    @Transactional
+    public void deleteById(Long id) {
+        Optional<Comment> commentOP = commentRepository.findById(id);
+        if (commentOP.isPresent()) {
+            commentRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("해당" + id + "로 삭제할 수 없습니다.");
+        }
+    }
 }// session은 예외->어차피 잘못될리가 없어서 디비에 이상한 데이터가 들어갈일이 없다
  // 다시 select를 해서 들고오는게 제일 안전하다, -> 뭐를 넣으면 영속화해서 넣을것
